@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /bin
 /build
 /.idea
@@ -6,3 +7,10 @@
 /.project
 /.gradle
 /*.iml
+=======
+.gradle
+build/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+>>>>>>> 327797ffb195f0d9c6545c97fa6222f8047d425b
