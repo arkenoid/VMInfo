@@ -66,26 +66,28 @@ public class Name {
 //        ArrayList<VirtualMachine> vms = new ArrayList<VirtualMachine>();
 
 //            vms = esxi.getVirtualMachines();
+        boolean match = false;
+        String VMNameOnESXi="";
             for (int i = 0; i < mes.length; i++) {
-
-                ManagedVirtualMachine mn = null;
+//                ManagedVirtualMachine mn = null;
                 try {
                     VirtualMachine vm = (VirtualMachine) mes[i];
                     String  ipVMinESXi=vm.getGuest().getIpAddress();
                     if(ipVMinESXi!=null) {
                         if (ipVMinESXi.equals(localIP)) {
-                            System.out.println(vm.getName());
-                        } else {
-                            System.out.println("This machine is not hosted on ESXi!");
-                            break;
+                            VMNameOnESXi=vm.getName();
+                            match=true;
                         }
                     }
                 } catch (Exception ex) {
-                    // TODO Auto-generated catch block
                     ex.printStackTrace();
                 }
             }
-
+        if (match) {
+            System.out.println(VMNameOnESXi);
+        } else {
+            System.out.println("This machine is not hosted on ESXi!");
+        }
 //        VirtualMachine vms = (VirtualMachine) mes[10];
 //
 //
