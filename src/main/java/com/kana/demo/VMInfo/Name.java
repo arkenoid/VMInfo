@@ -5,10 +5,8 @@ package com.kana.demo.VMInfo;
 
 import java.net.*;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Enumeration;
 
-import com.vmware.vim25.*;
 import com.vmware.vim25.mo.Folder;
 import com.vmware.vim25.mo.InventoryNavigator;
 import com.vmware.vim25.mo.ManagedEntity;
