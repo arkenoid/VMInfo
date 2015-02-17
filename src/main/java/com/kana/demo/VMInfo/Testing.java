@@ -1,3 +1,4 @@
+package com.kana.demo.VMInfo;
 /**
  * Created by aditya on 12/02/15.
  */

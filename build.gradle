@@ -3,7 +3,9 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'application'
 
-sourceCompatibility = 1.5
+mainClassName = "com.kana.demo.VMInfo.Name"
+
+sourceCompatibility = 1.7
 version = '1.0'
 jar {
     manifest {

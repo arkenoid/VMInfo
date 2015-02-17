@@ -1,3 +1,4 @@
+package com.kana.demo.VMInfo;
 
 
 /* Lead Developer:   Humair Ahmed
