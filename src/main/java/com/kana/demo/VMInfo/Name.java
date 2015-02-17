@@ -3,9 +3,9 @@
  */
 package com.kana.demo.VMInfo;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.*;
 import java.rmi.RemoteException;
+import java.util.Enumeration;
 
 import com.vmware.vim25.VirtualMachineCapability;
 import com.vmware.vim25.VirtualMachineConfigInfo;
@@ -28,7 +28,7 @@ public class Name {
 	 * @throws MalformedURLException 
 	 * @throws RemoteException 
 	 */
-	public static void main(String[] args) throws RemoteException, MalformedURLException {
+	public static void main(String[] args) throws RemoteException, MalformedURLException, UnknownHostException, SocketException {
 		long start = System.currentTimeMillis();
 	    ServiceInstance si = new ServiceInstance(new URL("https://10.77.28.2/sdk"), "root", "badjmac2", true);
 
@@ -58,6 +58,22 @@ public class Name {
 
 		System.out.println("Hello locationID = " + vm.getConfig().getLocationId());
 
+        System.out.println("Local IP = " + InetAddress.getLocalHost().getHostAddress());
+        Enumeration e = NetworkInterface.getNetworkInterfaces();
+        int ctr=0;
+        while(e.hasMoreElements())
+        {
+            NetworkInterface n = (NetworkInterface) e.nextElement();
+            Enumeration ee = n.getInetAddresses();
+            while (ee.hasMoreElements() && ctr<3)
+            {       ctr++;
+                if(ctr==3)
+                    break;
+                InetAddress i = (InetAddress) ee.nextElement();
+                if(ctr==2)
+                    System.out.println(i.getHostAddress());
+            }
+        }
 
 		System.out.println("GuestOS: " + vminfo.getGuestFullName());
 	    System.out.println("Multiple snapshot supported: " + vmc.isMultipleSnapshotsSupported());
