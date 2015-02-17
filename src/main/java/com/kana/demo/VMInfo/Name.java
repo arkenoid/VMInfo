@@ -49,6 +49,7 @@ public class Name {
 	    System.out.println("Hello " + vm.getName());
 	    System.out.println("GuestOS: " + vminfo.getGuestFullName());
 	    System.out.println("Multiple snapshot supported: " + vmc.isMultipleSnapshotsSupported());
+	    System.out.println("GuestOS: " + vminfo);
 
 	    si.getServerConnection().logout();
 	}

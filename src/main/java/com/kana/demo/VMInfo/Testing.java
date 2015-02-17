@@ -4,6 +4,7 @@ package com.kana.demo.VMInfo;
  */
 
 import com.vmware.vim25.InvalidProperty;
+import com.vmware.vim25.InvalidState;
 import com.vmware.vim25.RuntimeFault;
 import com.vmware.vim25.mo.VirtualMachine;
 
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 
 public class Testing {
 
-    public static void main (String argss[]){
+    public static void main (String argss[]) throws InvalidState, RuntimeFault, RemoteException{
 
         Esxi esxi = new Esxi();
 
@@ -63,7 +64,8 @@ public class Testing {
                 }
 
                 System.out.println("isi nama = " + mn.getName());
-
+                System.out.println("isi nama = " + esxi.getIpAddress());
+                System.out.println("===============================================================");
             }
 
 
