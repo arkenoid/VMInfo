@@ -3,10 +3,11 @@
  */
 package com.kana.demo.VMInfo;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.*;
 import java.rmi.RemoteException;
 import java.util.Enumeration;
+import java.util.concurrent.TimeoutException;
 
 import com.vmware.vim25.InvalidProperty;
 import com.vmware.vim25.mo.Folder;
@@ -30,41 +31,98 @@ public class Name {
     private static String localIP = "";
     static ManagedEntity[] mes;
 
-    public static void main(String[] args) throws RemoteException, MalformedURLException, UnknownHostException, SocketException {
+    public static void main(String[] args) {
 
-        GetPropertiesValues properties = new GetPropertiesValues();
+        readInput();
+
+    }
+
+    public static void readInput(){
+
+        String path = ".";
+
+        String files;
+        File folder = new File(path);
+        File[] listOfFiles = folder.listFiles();
+        String propFileName = null;
+
+        for (int i = 0; i < listOfFiles.length; i++)
+        {
+            if (listOfFiles[i].isFile())
+            {
+                files = listOfFiles[i].getName();
+                if (files.contains("config.properties"))
+                {
+                    propFileName = files;
+                }
+            }
+        }
+
+
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(propFileName));
+        } catch (FileNotFoundException e) {
+            System.out.println("File config.properties not found!");
+            //e.printStackTrace();
+        }
+
+        String line;
+        String[] data = new String[3];
+        int i=0;
 
         try {
-            boolean success = properties.checkPropertiesFile();
-
-            if (success) {
-
-                String url = properties.getURLProperties();
-                String userName = properties.getUserNameProperties();
-                String password = properties.getPasswordProperties();
-
-                System.out.println("check properties = " + url + ", " + userName + ", " + password);
-
-                ServiceInstance si = new ServiceInstance(new URL(url), userName, password, true);
-
-                initializationAPI(si);
-                getLocalIPAddress();
-                comparingIPAddress();
-                logoutConnection(si);
+            while ((line = br.readLine()) != null) {
+                // process the line.
+                String[] words = line.split("=");
+                data[i] = words[1].trim();
+                i++;
             }
-
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            br.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        makeConnection(data[0], data[1], data[2]);
     }
 
-    public static void initializationAPI(ServiceInstance si) throws RemoteException {
+    public static void makeConnection(String url,String userName,String password ){
+
+        ServiceInstance si = null;
+        try {
+            si = new ServiceInstance(new URL(url), userName, password, true);
+        } catch (RemoteException e) {
+            System.out.println("Please check your config.properties");
+            //e.printStackTrace();
+        } catch (MalformedURLException e) {
+            System.out.println("Please check your config.properties");
+            //e.printStackTrace();
+        }
+
+        initializationAPI(si);
+
+        getLocalIPAddress();
+        comparingIPAddress();
+        logoutConnection(si);
+    }
+
+
+    public static void initializationAPI(ServiceInstance si) {
 
         //API Initialization
         Folder rootFolder = si.getRootFolder();
 
-        mes = new InventoryNavigator(rootFolder).searchManagedEntities("VirtualMachine");
+        try {
+            mes = new InventoryNavigator(rootFolder).searchManagedEntities("VirtualMachine");
+        } catch (RemoteException e) {
+            System.out.println("Please check your config.properties");
+
+            //e.printStackTrace();
+        }
 
         if(mes==null || mes.length ==0)
         {
@@ -74,10 +132,17 @@ public class Name {
     }
 
 
-    public static void getLocalIPAddress() throws SocketException {
+    public static void getLocalIPAddress() {
 
         //Getting local IP Address
-        Enumeration e = NetworkInterface.getNetworkInterfaces();
+        Enumeration e = null;
+        try {
+            e = NetworkInterface.getNetworkInterfaces();
+        } catch (SocketException e1) {
+            System.out.println("Please check your config.properties");
+
+            //e1.printStackTrace();
+        }
         int ctr=0;
         while(e.hasMoreElements())
         {
@@ -107,15 +172,15 @@ public class Name {
         for (int i = 0; i < mes.length; i++) {
             try {
                 VirtualMachine vm = (VirtualMachine) mes[i];
-                String  ipVMinESXi=vm.getGuest().getIpAddress();
-                if(ipVMinESXi!=null) {
+                String ipVMinESXi = vm.getGuest().getIpAddress();
+                if (ipVMinESXi != null) {
                     if (ipVMinESXi.equals(localIP)) {
-                        VMNameOnESXi=vm.getName();
-                        match=true;
+                        VMNameOnESXi = vm.getName();
+                        match = true;
                     }
                 }
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            } catch (Exception te) {
+                System.out.println("time out");
             }
         }
         if (match) {
