@@ -51,7 +51,7 @@ public class Name {
             if (listOfFiles[i].isFile())
             {
                 files = listOfFiles[i].getName();
-                if (files.contains("config.properties"))
+                if (files.equals("config.properties"))
                 {
                     propFileName = files;
                 }
